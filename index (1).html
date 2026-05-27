@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Micros de Larga Distancia | Ezeiza Connect Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --blue:       #0077CC;
+      --blue-mid:   #38A9FF;
+      --blue-light: #D9EFFF;
+      --blue-dark:  #061A2B;
+      --blue-deep:  #004A8A;
+      --text:       #0D1B2A;
+      --muted:      #4B6075;
+      --white:      #FFFFFF;
+      --surface:    #F4F9FF;
+      --border:     #C8DFF2;
+      --r:          10px;
+      --rl:         14px;
+      --tr:         0.2s ease;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', 'Segoe UI', sans-serif; color: var(--text); background: var(--white); font-size: 16px; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(6,26,43,0.97); border-bottom: 1px solid rgba(56,169,255,0.15); }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-brand { display: flex; align-items: center; gap: 10px; color: var(--white); }
+    .nav-logo { font-size: 1.2rem; }
+    .brand-name { font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--white); display: block; }
+    .brand-sub  { font-size: 0.65rem; color: var(--blue-mid); display: block; }
+    .nav-links  { display: flex; gap: 2px; }
+    .nav-links a { color: rgba(255,255,255,0.65); font-size: 0.83rem; font-weight: 500; padding: 6px 11px; border-radius: 6px; transition: background var(--tr), color var(--tr); }
+    .nav-links a:hover { color: var(--white); background: rgba(56,169,255,0.15); }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; }
+    .nav-toggle span { display: block; width: 20px; height: 2px; background: var(--white); border-radius: 2px; }
+
+    /* HERO — compact */
+    .hero {
+      background: var(--blue-dark); padding: 100px 20px 56px;
+      position: relative; overflow: hidden;
+    }
+    .hero-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .hero-grid-lines {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(56,169,255,0.04) 1px,transparent 1px), linear-gradient(90deg,rgba(56,169,255,0.04) 1px,transparent 1px);
+      background-size: 44px 44px;
+    }
+    .hero-glow { position: absolute; top: -160px; right: -160px; width: 500px; height: 500px; background: radial-gradient(circle,rgba(0,119,204,0.2) 0%,transparent 70%); pointer-events: none; }
+    .hero-left { position: relative; z-index: 2; }
+    .hero-badge { display: inline-block; background: rgba(56,169,255,0.15); border: 1px solid rgba(56,169,255,0.3); color: var(--blue-mid); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 12px; border-radius: 50px; margin-bottom: 16px; }
+    .hero-title { font-family: 'Syne', sans-serif; font-size: clamp(2rem,4.5vw,3rem); font-weight: 800; color: var(--white); line-height: 1.08; margin-bottom: 12px; }
+    .hero-accent { color: var(--blue-mid); }
+    .hero-sub { color: rgba(255,255,255,0.55); font-size: 0.95rem; margin-bottom: 28px; }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { display: inline-block; font-weight: 600; font-size: 0.9rem; padding: 11px 22px; border-radius: var(--r); transition: background var(--tr), transform var(--tr); }
+    .btn-primary { background: var(--blue); color: var(--white); border: 2px solid var(--blue); }
+    .btn-primary:hover { background: var(--blue-mid); border-color: var(--blue-mid); transform: translateY(-1px); }
+    .btn-ghost { background: transparent; color: rgba(255,255,255,0.7); border: 2px solid rgba(255,255,255,0.2); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.5); color: var(--white); }
+
+    /* LIVE CARD */
+    .hero-right { position: relative; z-index: 2; }
+    .live-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(56,169,255,0.2); border-radius: var(--rl); padding: 20px; }
+    .live-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .live-title { font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.06em; }
+    .live-status { font-size: 0.75rem; font-weight: 600; color: #4ade80; }
+    .next-dep { background: rgba(0,119,204,0.25); border: 1px solid rgba(56,169,255,0.3); border-radius: var(--r); padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .next-label { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+    .next-time  { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--blue-mid); }
+    .next-dest  { font-size: 0.88rem; color: var(--white); font-weight: 600; }
+    .dep-list { display: flex; flex-direction: column; gap: 8px; }
+    .dep-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .dep-row:last-child { border-bottom: none; }
+    .dep-hora { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--white); min-width: 44px; }
+    .dep-dst { font-size: 0.85rem; color: rgba(255,255,255,0.65); flex: 1; padding: 0 10px; }
+    .dep-tipo { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 50px; }
+    .tipo-sc { background: rgba(56,169,255,0.2); color: var(--blue-mid); }
+    .tipo-ca { background: rgba(250,198,120,0.2); color: #FAC675; }
+    .tipo-ej { background: rgba(74,222,128,0.2); color: #4ade80; }
+
+    /* SECTIONS */
+    .section { padding: 64px 20px; }
+    .section-alt { background: var(--surface); }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .sec-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue); margin-bottom: 8px; }
+    .sec-title { font-family: 'Syne', sans-serif; font-size: clamp(1.5rem,2.5vw,2rem); font-weight: 800; color: var(--blue-dark); margin-bottom: 28px; }
+
+    /* DESTINOS — scannable cards */
+    .destinos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+    .destino-card { background: var(--blue-dark); color: var(--white); border-radius: var(--r); padding: 18px 16px; transition: background var(--tr), transform var(--tr); cursor: default; }
+    .destino-card:hover { background: var(--blue-deep); transform: translateY(-2px); }
+    .dest-city { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .dest-meta { display: flex; gap: 10px; }
+    .dest-km { font-size: 0.72rem; color: rgba(255,255,255,0.45); }
+    .dest-hs { font-size: 0.72rem; color: var(--blue-mid); font-weight: 600; }
+
+    /* EMPRESAS */
+    .empresas-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+    .empresa-pill { background: var(--surface); border: 1px solid var(--border); border-radius: 50px; padding: 8px 18px; font-size: 0.85rem; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .empresa-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+
+    /* PARADAS */
+    .paradas-track { display: flex; flex-direction: column; gap: 0; max-width: 600px; }
+    .parada-item { display: flex; gap: 16px; align-items: flex-start; position: relative; }
+    .parada-item:not(:last-child)::before { content: ''; position: absolute; left: 14px; top: 32px; bottom: -8px; width: 2px; background: var(--border); }
+    .parada-dot-wrap { display: flex; flex-direction: column; align-items: center; padding-top: 4px; flex-shrink: 0; }
+    .parada-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 0.72rem; font-weight: 700; z-index: 1; }
+    .parada-dot.light { background: var(--border); color: var(--muted); }
+    .parada-body { padding: 2px 0 24px; }
+    .parada-name { font-weight: 600; font-size: 0.97rem; color: var(--blue-dark); margin-bottom: 3px; }
+    .parada-info { font-size: 0.83rem; color: var(--muted); }
+    .parada-chips { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+    .chip { background: var(--blue-light); color: var(--blue-deep); font-size: 0.7rem; font-weight: 600; padding: 2px 9px; border-radius: 50px; }
+
+    /* TIPS */
+    .tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 28px; }
+    .tip { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start; font-size: 0.85rem; color: var(--muted); }
+    .tip-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* MAPA */
+    .mapa-wrap { border-radius: var(--rl); overflow: hidden; border: 1px solid var(--border); height: 380px; }
+
+    /* HORARIOS */
+    .tabs { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+    .tab { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 7px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600; color: var(--muted); cursor: pointer; transition: all var(--tr); }
+    .tab:hover { border-color: var(--blue); color: var(--blue); }
+    .tab.active { background: var(--blue); border-color: var(--blue); color: var(--white); }
+    .tab-content.hidden { display: none; }
+    .table-wrap { overflow-x: auto; border-radius: var(--rl); border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; background: var(--white); font-size: 0.88rem; }
+    thead { background: var(--blue-dark); color: var(--white); }
+    th { padding: 11px 14px; text-align: left; font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+    td { padding: 11px 14px; border-bottom: 1px solid var(--border); }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: var(--surface); }
+    .hora { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--blue); font-size: 1rem; }
+    .badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 50px; }
+    .b-sc { background: var(--blue-light); color: var(--blue-deep); }
+    .b-ca { background: #FFF3CC; color: #7A5400; }
+    .b-ej { background: #D4F4E3; color: #0A5E31; }
+    .table-note { margin-top: 10px; font-size: 0.75rem; color: var(--muted); }
+
+    /* ACCESIBILIDAD */
+    .acc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+    .acc-item { display: flex; align-items: center; gap: 12px; background: var(--white); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; font-size: 0.88rem; color: var(--text); font-weight: 500; }
+    .acc-item-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .acc-banner { background: var(--blue-dark); border-radius: var(--rl); padding: 18px 22px; display: flex; align-items: center; gap: 14px; color: var(--white); margin-top: 16px; }
+    .acc-banner-text strong { font-size: 0.93rem; display: block; margin-bottom: 2px; }
+    .acc-banner-text span { font-size: 0.82rem; color: rgba(255,255,255,0.55); }
+
+    /* FOOTER */
+    .footer { background: var(--blue-dark); padding: 28px 20px; border-top: 1px solid rgba(56,169,255,0.1); }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.35); line-height: 1.6; }
+    .footer-copy strong { color: rgba(255,255,255,0.6); }
+    .footer-links { display: flex; gap: 14px; flex-wrap: wrap; }
+    .footer-links a { font-size: 0.8rem; color: rgba(255,255,255,0.4); transition: color var(--tr); }
+    .footer-links a:hover { color: var(--white); }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+    .hero-left  { animation: fadeUp 0.6s ease both; }
+    .hero-right { animation: fadeUp 0.75s ease both; }
+
+    @media (max-width: 820px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+      .live-card { max-width: 100%; }
+    }
+    @media (max-width: 600px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; right: 0; background: var(--blue-dark); padding: 12px 18px; border-bottom: 1px solid rgba(56,169,255,0.15); }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: flex; }
+      .section { padding: 48px 16px; }
+      .hero { padding: 84px 16px 44px; }
+      .destinos-grid { grid-template-columns: repeat(2,1fr); }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">
+      <span class="nav-logo">✈</span>
+      <div><span class="brand-name">Ezeiza Connect Hub</span><span class="brand-sub">Larga Distancia</span></div>
+    </a>
+    <button class="nav-toggle" aria-label="Menú" onclick="document.getElementById('nav').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links" id="nav">
+      <a href="#destinos">Destinos</a>
+      <a href="#horarios">Horarios</a>
+      <a href="#paradas">Paradas</a>
+      <a href="#mapa">Mapa</a>
+      <a href="#accesibilidad">Accesibilidad</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid-lines"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="hero-badge">Terminal A · Ezeiza</div>
+      <h1 class="hero-title">Larga<br/><span class="hero-accent">Distancia</span></h1>
+      <p class="hero-sub">Del aeropuerto al interior del país, directo.</p>
+      <div class="hero-actions">
+        <a href="#horarios" class="btn btn-primary">Ver horarios</a>
+        <a href="#destinos" class="btn btn-ghost">Destinos</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="live-card">
+        <div class="live-header">
+          <span class="live-title">Próximas salidas</span>
+          <span class="live-status">● Operando</span>
+        </div>
+        <div class="next-dep">
+          <div>
+            <div class="next-label">Próxima salida</div>
+            <div class="next-dest" id="next-dest">Cargando...</div>
+          </div>
+          <div class="next-time" id="next-time">--:--</div>
+        </div>
+        <div class="dep-list" id="dep-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESTINOS -->
+<section class="section" id="destinos">
+  <div class="container">
+    <div class="sec-label">Destinos</div>
+    <h2 class="sec-title">¿A dónde vas?</h2>
+    <div class="empresas-row">
+      <div class="empresa-pill"><span class="empresa-dot"></span>Flecha Bus</div>
+      <div class="empresa-pill"><span class="empresa-dot"></span>Andesmar</div>
+      <div class="empresa-pill"><span class="empresa-dot"></span>El Rápido Argentino</div>
+    </div>
+    <div class="destinos-grid">
+      <div class="destino-card"><div class="dest-city">Córdoba</div><div class="dest-meta"><span class="dest-km">710 km</span><span class="dest-hs">~8 hs</span></div></div>
+      <div class="destino-card"><div class="dest-city">Rosario</div><div class="dest-meta"><span class="dest-km">300 km</span><span class="dest-hs">~5 hs</span></div></div>
+      <div class="destino-card"><div class="dest-city">Mar del Plata</div><div class="dest-meta"><span class="dest-km">400 km</span><span class="dest-hs">~6 hs</span></div></div>
+      <div class="destino-card"><div class="dest-city">Santa Fe</div><div class="dest-meta"><span class="dest-km">480 km</span><span class="dest-hs">~6 hs</span></div></div>
+      <div class="destino-card"><div class="dest-city">Mendoza</div><div class="dest-meta"><span class="dest-km">1100 km</span><span class="dest-hs">~14 hs</span></div></div>
+      <div class="destino-card"><div class="dest-city">Tucumán</div><div class="dest-meta"><span class="dest-km">1300 km</span><span class="dest-hs">~15 hs</span></div></div>
+      <div class="destino-card"><div class="dest-city">Bariloche</div><div class="dest-meta"><span class="dest-km">1600 km</span><span class="dest-hs">~20 hs</span></div></div>
+      <div class="destino-card"><div class="dest-city">Salta</div><div class="dest-meta"><span class="dest-km">1550 km</span><span class="dest-hs">~18 hs</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HORARIOS -->
+<section class="section section-alt" id="horarios">
+  <div class="container">
+    <div class="sec-label">Horarios</div>
+    <h2 class="sec-title">Salidas desde Terminal A</h2>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('diario',this)">Lunes a viernes</button>
+      <button class="tab" onclick="showTab('finde',this)">Fin de semana</button>
+      <button class="tab" onclick="showTab('nocturno',this)">Nocturnos</button>
+    </div>
+
+    <div class="tab-content" id="tab-diario">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Salida</th><th>Destino</th><th>Empresa</th><th>Duración</th><th>Tipo</th></tr></thead>
+          <tbody>
+            <tr><td class="hora">05:30</td><td>Mar del Plata</td><td>El Rápido Argentino</td><td>5 h 30 min</td><td><span class="badge b-sc">Semi-cama</span></td></tr>
+            <tr><td class="hora">06:00</td><td>Córdoba</td><td>Flecha Bus</td><td>8 h</td><td><span class="badge b-sc">Semi-cama</span></td></tr>
+            <tr><td class="hora">08:15</td><td>Rosario</td><td>Flecha Bus</td><td>4 h 45 min</td><td><span class="badge b-ej">Ejecutivo</span></td></tr>
+            <tr><td class="hora">10:00</td><td>Mendoza</td><td>Andesmar</td><td>14 h</td><td><span class="badge b-ca">Cama</span></td></tr>
+            <tr><td class="hora">12:30</td><td>Córdoba</td><td>Flecha Bus</td><td>8 h</td><td><span class="badge b-sc">Semi-cama</span></td></tr>
+            <tr><td class="hora">14:00</td><td>Santa Fe</td><td>El Rápido Argentino</td><td>6 h</td><td><span class="badge b-sc">Semi-cama</span></td></tr>
+            <tr><td class="hora">16:30</td><td>Mar del Plata</td><td>El Rápido Argentino</td><td>5 h 30 min</td><td><span class="badge b-ej">Ejecutivo</span></td></tr>
+            <tr><td class="hora">18:00</td><td>Tucumán</td><td>Andesmar</td><td>15 h</td><td><span class="badge b-ca">Cama</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tab-content hidden" id="tab-finde">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Salida</th><th>Destino</th><th>Empresa</th><th>Duración</th><th>Tipo</th></tr></thead>
+          <tbody>
+            <tr><td class="hora">07:00</td><td>Mar del Plata</td><td>El Rápido Argentino</td><td>5 h 30 min</td><td><span class="badge b-ej">Ejecutivo</span></td></tr>
+            <tr><td class="hora">09:00</td><td>Córdoba</td><td>Flecha Bus</td><td>8 h</td><td><span class="badge b-sc">Semi-cama</span></td></tr>
+            <tr><td class="hora">11:00</td><td>Bariloche</td><td>Andesmar</td><td>20 h</td><td><span class="badge b-ca">Cama</span></td></tr>
+            <tr><td class="hora">15:00</td><td>Rosario</td><td>Flecha Bus</td><td>4 h 45 min</td><td><span class="badge b-sc">Semi-cama</span></td></tr>
+            <tr><td class="hora">18:00</td><td>Mendoza</td><td>Andesmar</td><td>14 h</td><td><span class="badge b-ca">Cama</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tab-content hidden" id="tab-nocturno">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Salida</th><th>Destino</th><th>Empresa</th><th>Duración</th><th>Tipo</th></tr></thead>
+          <tbody>
+            <tr><td class="hora">21:00</td><td>Córdoba</td><td>Flecha Bus</td><td>8 h</td><td><span class="badge b-ca">Cama</span></td></tr>
+            <tr><td class="hora">22:00</td><td>Mendoza</td><td>Andesmar</td><td>14 h</td><td><span class="badge b-ca">Cama</span></td></tr>
+            <tr><td class="hora">22:30</td><td>Tucumán</td><td>Andesmar</td><td>15 h</td><td><span class="badge b-ca">Cama</span></td></tr>
+            <tr><td class="hora">23:00</td><td>Bariloche</td><td>Andesmar</td><td>20 h</td><td><span class="badge b-ca">Cama</span></td></tr>
+            <tr><td class="hora">23:30</td><td>Mar del Plata</td><td>El Rápido Argentino</td><td>5 h 30 min</td><td><span class="badge b-sc">Semi-cama</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="table-note">* Sujeto a modificación. Consultá en boletería Terminal A antes de viajar.</p>
+  </div>
+</section>
+
+<!-- PARADAS -->
+<section class="section" id="paradas">
+  <div class="container">
+    <div class="sec-label">Paradas</div>
+    <h2 class="sec-title">Recorrido de la línea</h2>
+    <div class="paradas-track">
+      <div class="parada-item">
+        <div class="parada-dot-wrap"><div class="parada-dot">01</div></div>
+        <div class="parada-body">
+          <div class="parada-name">Terminal A – Ezeiza</div>
+          <div class="parada-info">Planta baja · salir por llegadas internacionales · seguir señal amarilla "Buses"</div>
+          <div class="parada-chips"><span class="chip">Boletería 24 hs</span><span class="chip">Sala de espera</span><span class="chip">Wi-Fi</span></div>
+        </div>
+      </div>
+      <div class="parada-item">
+        <div class="parada-dot-wrap"><div class="parada-dot light">02</div></div>
+        <div class="parada-body">
+          <div class="parada-name">Retiro – Dársena F <em style="font-size:0.78rem;color:var(--muted);font-style:normal;">(parada opcional)</em></div>
+          <div class="parada-info">~45 min desde Ezeiza por Autopista Riccheri · conexión con subte y ferrocarril</div>
+          <div class="parada-chips"><span class="chip">Subte C</span><span class="chip">Belgrano Norte / Mitre / Urquiza</span></div>
+        </div>
+      </div>
+      <div class="parada-item">
+        <div class="parada-dot-wrap"><div class="parada-dot light">03</div></div>
+        <div class="parada-body">
+          <div class="parada-name">Destino final</div>
+          <div class="parada-info">Terminal según empresa y ciudad · consultá en boletería</div>
+        </div>
+      </div>
+    </div>
+    <div class="tips-grid">
+      <div class="tip"><span class="tip-icon">⏱️</span>Llegar 30 min antes de la salida</div>
+      <div class="tip"><span class="tip-icon">🪪</span>DNI o pasaporte para embarcar</div>
+      <div class="tip"><span class="tip-icon">🧳</span>Bodega hasta 30 kg sin cargo</div>
+      <div class="tip"><span class="tip-icon">👶</span>Menores de 4 años viajan gratis</div>
+    </div>
+  </div>
+</section>
+
+<!-- MAPA -->
+<section class="section section-alt" id="mapa">
+  <div class="container">
+    <div class="sec-label">Mapa</div>
+    <h2 class="sec-title">Ezeiza → Retiro → Interior</h2>
+    <div class="mapa-wrap">
+      <iframe
+        title="Mapa recorrido Ezeiza a Retiro"
+        src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d209375.01553706698!2d-58.7130!3d-34.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0x95bcd0ceadce8f2b%3A0xbef1c4fc15aa4cfc!2sAeropuerto%20Internacional%20Ministro%20Pistarini!3m2!1d-34.8222!2d-58.5358!4m5!1s0x95bcca3b05b5f5e3%3A0xc80b962f4ccf6f5e!2sTerminal%20de%20%C3%93mnibus%20de%20Retiro!3m2!1d-34.5922!2d-58.3744!5e0!3m2!1ses!2sar"
+        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ACCESIBILIDAD -->
+<section class="section" id="accesibilidad">
+  <div class="container">
+    <div class="sec-label">Accesibilidad</div>
+    <h2 class="sec-title">Para todos los viajeros</h2>
+    <div class="acc-list">
+      <div class="acc-item"><span class="acc-item-icon">♿</span>Rampas hidráulicas en todas las unidades</div>
+      <div class="acc-item"><span class="acc-item-icon">🪑</span>Espacios reservados para silla de ruedas</div>
+      <div class="acc-item"><span class="acc-item-icon">🦯</span>Piso podotáctil y señalética Braille en terminal</div>
+      <div class="acc-item"><span class="acc-item-icon">🔊</span>Anuncios de salida por altavoces y pantallas</div>
+      <div class="acc-item"><span class="acc-item-icon">🎨</span>Cartelería con alto contraste (WCAG AA)</div>
+      <div class="acc-item"><span class="acc-item-icon">🧑‍🤝‍🧑</span>Asistencia con equipaje sin cargo adicional</div>
+    </div>
+    <div class="acc-banner">
+      <span style="font-size:1.6rem">📞</span>
+      <div class="acc-banner-text">
+        <strong>¿Necesitás asistencia especial?</strong>
+        <span>Avisanos con 48 hs de anticipación · accesibilidad@ezeizaconnect.ar</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-copy">
+      © 2026 Micros de Larga Distancia · Ezeiza Connect Hub<br/>
+      Desarrollado por <strong>Tobias Fernández Rousseaux</strong> – Sky Consulting
+    </div>
+    <div class="footer-links">
+      <a href="#destinos">Destinos</a>
+      <a href="#horarios">Horarios</a>
+      <a href="#paradas">Paradas</a>
+      <a href="#mapa">Mapa</a>
+      <a href="#accesibilidad">Accesibilidad</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const schedule = [
+    {time:'05:30',dest:'Mar del Plata',tipo:'sc'},
+    {time:'06:00',dest:'Córdoba',tipo:'sc'},
+    {time:'08:15',dest:'Rosario',tipo:'ej'},
+    {time:'10:00',dest:'Mendoza',tipo:'ca'},
+    {time:'12:30',dest:'Córdoba',tipo:'sc'},
+    {time:'14:00',dest:'Santa Fe',tipo:'sc'},
+    {time:'16:30',dest:'Mar del Plata',tipo:'ej'},
+    {time:'18:00',dest:'Tucumán',tipo:'ca'},
+    {time:'21:00',dest:'Córdoba',tipo:'ca'},
+    {time:'22:00',dest:'Mendoza',tipo:'ca'},
+    {time:'22:30',dest:'Tucumán',tipo:'ca'},
+    {time:'23:00',dest:'Bariloche',tipo:'ca'},
+    {time:'23:30',dest:'Mar del Plata',tipo:'sc'},
+  ];
+  const tipoLabel = {sc:'Semi-cama',ca:'Cama',ej:'Ejecutivo'};
+
+  function toMins(t) { const [h,m]=t.split(':').map(Number); return h*60+m; }
+
+  function updatePanel() {
+    const now = new Date();
+    const nowMins = now.getHours()*60+now.getMinutes();
+    const upcoming = schedule.filter(d => toMins(d.time) > nowMins);
+    const list = upcoming.length ? upcoming : schedule; // wrap to next day
+
+    // next
+    document.getElementById('next-time').textContent = list[0].time;
+    document.getElementById('next-dest').textContent = list[0].dest;
+
+    // next 3
+    const depList = document.getElementById('dep-list');
+    depList.innerHTML = list.slice(1,4).map(d =>
+      `<div class="dep-row">
+        <span class="dep-hora">${d.time}</span>
+        <span class="dep-dst">${d.dest}</span>
+        <span class="dep-tipo tipo-${d.tipo}">${tipoLabel[d.tipo]}</span>
+      </div>`
+    ).join('');
+  }
+
+  updatePanel();
+  setInterval(updatePanel, 60000);
+
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-'+id).classList.remove('hidden');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>
